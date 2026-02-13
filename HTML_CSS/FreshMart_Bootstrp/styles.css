@@ -1,0 +1,112 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+:root {
+  --primary-color: #2f9e44;
+
+  --bs-primary: var(--primary-color);
+  --bs-primary-rgb: 47, 158, 68;
+}
+
+.hero {
+  height: 90vh;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("assets/background.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-section {
+  flex: 1;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.page-section h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.emoji {
+  font-size: 3rem;
+}
+
+.category-card {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.bg-orange {
+  background-color: #ff922b;
+}
+
+.bg-blue {
+  background-color: #1c7ed6;
+}
+
+.border-dotted {
+  border: 2px dotted gray;
+}
+
+.coupon-card {
+  border: 2px dashed #ccc !important;
+  overflow: hidden;
+}
+
+.coupon-code-green {
+  border: 2px dashed #2f9e44;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.coupon-code-orange {
+  color: #ff922b;
+  border: 2px dashed #ff922b;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.coupon-code-blue {
+  color: #1c7ed6;
+  border: 2px dashed #1c7ed6;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+}
