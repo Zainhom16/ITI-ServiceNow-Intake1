@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact Page</title>
+    <title>Dairy Page</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- Header Section -->
     <header class="header">
       <nav class="nav-bar">
         <h1>
@@ -16,10 +17,10 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="shop.html">Shop</a></li>
           <li><a href="bakery.html">Bakery</a></li>
-          <li><a href="dairy.html">Dairy</a></li>
+          <li><a href="dairy.html" class="active">Dairy</a></li>
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="offers.html">Offers</a></li>
-          <li><a href="contact.html" class="active">Contact</a></li>
+          <li><a href="contact.html">Contact</a></li>
           <li><a href="recipes.html">Recipes</a></li>
           <li><a href="about.html">About us</a></li>
           <li><a href="privacy.html">Privacy Policy</a></li>
@@ -28,30 +29,31 @@
       </nav>
     </header>
 
+    <!-- Main Content Section -->
     <main class="main-content">
       <section class="section">
-        <h2>Get in Touch</h2>
-        <div class="contact-form">
-          <div class="input-form">
-            <label for="name">Name</label>
-            <input type="text" id="name" placeholder="Hazem Zainhom" />
+        <h2>Dairy & Cold Fridge</h2>
+        <div class="product-container">
+          <div class="product">
+            <span class="emoji">🥛</span>
+            <h4>White Milk (1 gallon)</h4>
+            <p>$3.99</p>
+            <button>Add to Cart</button>
           </div>
-          <div class="input-form">
-            <label for="email">Email</label>
-            <input
-              type="text"
-              id="email"
-              placeholder="Hazem.Zainhom@iti.gov.eg"
-            />
+
+          <div class="product">
+            <span class="emoji">🧀</span>
+            <h4>Cheddar Cheese Block</h4>
+            <p>$4.50</p>
+            <button>Add to Cart</button>
           </div>
-          <div class="input-form">
-            <label for="message">Message</label>
-            <textarea
-              id="message"
-              placeholder="Write your message here..."
-            ></textarea>
+
+          <div class="product">
+            <span class="emoji">🥚</span>
+            <h4>Large Brown Eggs (12ct)</h4>
+            <p>$2.80</p>
+            <button>Add to Cart</button>
           </div>
-          <button class="send-message-btn">Send Message</button>
         </div>
       </section>
     </main>

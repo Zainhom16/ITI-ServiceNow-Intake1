@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact Page</title>
+    <title>Privacy Page</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- Header Section -->
     <header class="header">
       <nav class="nav-bar">
         <h1>
@@ -19,39 +20,33 @@
           <li><a href="dairy.html">Dairy</a></li>
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="offers.html">Offers</a></li>
-          <li><a href="contact.html" class="active">Contact</a></li>
+          <li><a href="contact.html">Contact</a></li>
           <li><a href="recipes.html">Recipes</a></li>
           <li><a href="about.html">About us</a></li>
-          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="privacy.html" class="active">Privacy Policy</a></li>
           <li><a href="locations.html">Locations</a></li>
         </ul>
       </nav>
     </header>
 
+    <!-- Main Content Section -->
     <main class="main-content">
       <section class="section">
-        <h2>Get in Touch</h2>
-        <div class="contact-form">
-          <div class="input-form">
-            <label for="name">Name</label>
-            <input type="text" id="name" placeholder="Hazem Zainhom" />
+        <h2>Privacy Policy</h2>
+        <div class="product-container">
+          <div class="single-container">
+            <div style="text-align: start">
+              <p class="card-text mb-0">
+                Your privacy is important to us. This policy explains gow we
+                handle your data.
+                <br />
+                <br />
+                1. We don't sell your personal information to third party.
+                <br />
+                2. We use cookies to improve your shopping experience.
+              </p>
+            </div>
           </div>
-          <div class="input-form">
-            <label for="email">Email</label>
-            <input
-              type="text"
-              id="email"
-              placeholder="Hazem.Zainhom@iti.gov.eg"
-            />
-          </div>
-          <div class="input-form">
-            <label for="message">Message</label>
-            <textarea
-              id="message"
-              placeholder="Write your message here..."
-            ></textarea>
-          </div>
-          <button class="send-message-btn">Send Message</button>
         </div>
       </section>
     </main>
