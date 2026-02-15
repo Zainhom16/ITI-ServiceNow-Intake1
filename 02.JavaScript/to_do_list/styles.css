@@ -1,0 +1,19 @@
+.count {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.single_list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+#list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
