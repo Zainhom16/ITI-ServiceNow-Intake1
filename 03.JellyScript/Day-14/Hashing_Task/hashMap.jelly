@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<j:jelly xmlns:j="jelly:core">
+
+<j:new className="java.util.ArrayList" var="usersList"/>
+
+<!-- User 1-->
+<j:new className="java.util.HashMap" var="user"/>
+<j:invoke on="${user}" method="put">
+<j:arg value="name"/>
+<j:arg value="Hazem Zainhom"/>
+</j:invoke>
+
+<j:invoke on="${user}" method="put">
+<j:arg value="age"/>
+<j:arg value="23"/>
+</j:invoke>
+
+<j:invoke on="${user}" method="put">
+<j:arg value="city"/>
+<j:arg value="Cairo"/>
+</j:invoke>
+
+<!-- User 2-->
+<j:new className="java.util.HashMap" var="user2"/>
+<j:invoke on="${user2}" method="put">
+<j:arg value="name"/>
+<j:arg value="Youssif Mahmoud"/>
+</j:invoke>
+
+<j:invoke on="${user2}" method="put">
+<j:arg value="age"/>
+<j:arg value="23"/>
+</j:invoke>
+
+<j:invoke on="${user2}" method="put">
+<j:arg value="city"/>
+<j:arg value="Ismailia"/>
+</j:invoke>
+
+<j:invoke on="${usersList}" method="add">
+  <j:arg value="${user}"/>
+</j:invoke>
+
+<j:invoke on="${usersList}" method="add">
+  <j:arg value="${user2}"/>
+</j:invoke>
+
+<!--for Each-->
+<j:forEach var="user" items="${usersList}">
+  <p>User Name: ${user.name}</p>
+  <p>User Age: ${user.age}</p>
+  <p>User City: ${user.city}</p>
+</j:forEach>
+
+</j:jelly>
+
