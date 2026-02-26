@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Angular Practice</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+      integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div
+      ng-app="MyApp"
+      ng-controller="MyController"
+      class="container-fluid d-flex justify-content-center align-items-center"
+    >
+      <div class="card shadow p-4 mt-5" style="width: 800px">
+        <h3 class="text-center mb-4">Task Login Form</h3>
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Enter your email"
+            ng-model="email"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Enter your password"
+            ng-model="password"
+          />
+        </div>
+
+        <button
+          class="btn btn-primary w-100"
+          ng-disabled="!email || !password || password.length < 6"
+          ng-click="login()"
+        >
+          Login
+        </button>
+
+        <p class="text-success mt-3" ng-if="submitted && success">
+          Login successful! - {{ email }}
+        </p>
+
+        <p class="text-danger mt-3" ng-if="submitted && !success">
+          Login failed! - Must use admin@gmail.com and password at least 6
+          characters.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      var app = angular.module("MyApp", []);
+
+      app.controller("MyController", function ($scope) {
+        $scope.submitted = false;
+        $scope.success = false;
+
+        $scope.login = function () {
+          $scope.submitted = true;
+
+          if (
+            $scope.email &&
+            $scope.email === "admin@gmail.com" &&
+            $scope.password &&
+            $scope.password.length >= 6 &&
+            $scope.password == "123456"
+          ) {
+            $scope.success = true;
+          } else {
+            $scope.success = false;
+          }
+        };
+      });
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
