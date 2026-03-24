@@ -1,3 +1,7 @@
+-- =====================================================
+-- ============= 1. TABLES CREATION =====================
+-- =====================================================
+
 CREATE TABLE role (
     role_id SERIAL PRIMARY KEY,
     role_name VARCHAR(20) NOT NULL CHECK (role_name IN ('admin','customer'))
@@ -18,13 +22,6 @@ CREATE TABLE hotel (
     location VARCHAR(100),
     rating DECIMAL(2,1) CHECK (rating >= 0.0 AND rating <= 5.0),
     description TEXT
-);
-
-CREATE TABLE room ( 
-	room_id SERIAL PRIMARY KEY,
-	type TEXT,
-	price DECIMAL(2,1) CHECK (price >= 0.0),
-	availability Boolean,
 );
 
 CREATE TABLE room (
@@ -51,12 +48,13 @@ CREATE TABLE flight (
     airline_id INT REFERENCES airline(airline_id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE TABLE reservation_hotel (
+CREATE TABLE reservation_room (
     reservation_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES user_account(user_id) ON DELETE CASCADE,
-    hotel_id INT NOT NULL REFERENCES hotel(hotel_id) ON DELETE CASCADE,
-    reservation_date DATE,
-    status VARCHAR(20) CHECK (status IN ('Pending','Confirmed','Cancelled'))
+    user_id INT REFERENCES user_account(user_id) ON DELETE CASCADE,
+    room_id INT REFERENCES room(room_id) ON DELETE CASCADE,
+    check_in DATE NOT NULL,
+    check_out DATE NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('Pending','Confirmed','Cancelled')) DEFAULT 'pending'
 );
 
 CREATE TABLE booking_flight (
@@ -69,60 +67,74 @@ CREATE TABLE booking_flight (
 
 CREATE TABLE review (
     review_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES user_account(user_id) ON DELETE CASCADE,
-    review_type VARCHAR(10) NOT NULL CHECK (review_type IN ('hotel','flight')),
-    hotel_id INT REFERENCES hotel(hotel_id),
-    flight_id INT REFERENCES flight(flight_id),
-    rating INT CHECK (rating >= 0 AND rating <= 5),
-    comment TEXT,
-    review_date DATE
+    user_id INT REFERENCES user_account(user_id) ON DELETE CASCADE,
+    entity_id INT NOT NULL,
+    type VARCHAR(10) CHECK (type IN ('hotel','flight')),
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT
 );
 
 CREATE TABLE payment (
     payment_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES user_account(user_id) ON DELETE CASCADE,
-    reservation_id INT REFERENCES reservation_hotel(reservation_id) ON DELETE CASCADE,
-    booking_id INT REFERENCES booking_flight(booking_id) ON DELETE CASCADE,
-    amount DECIMAL(10,2) CHECK (amount >= 0.0),
-    payment_method VARCHAR(50) NOT NULL CHECK (payment_method IN ('Cash', 'Card')),
-    payment_date DATE NOT NULL,
-    CHECK (reservation_id IS NOT NULL OR booking_id IS NOT NULL)
+    user_id INT REFERENCES user_account(user_id) ON DELETE CASCADE,
+    entity_id INT NOT NULL,
+    type VARCHAR(10) CHECK (type IN ('hotel','flight')),
+    amount DECIMAL(10,2) NOT NULL CHECK (amount >= 0),
+    payment_method VARCHAR(20) CHECK (payment_method IN ('Card','Cash')),
+    payment_date DATE DEFAULT CURRENT_DATE
 );
 
+-- =====================================================
+-- ============= 2. INSERTING DATA =====================
+-- =====================================================
+
+-- ROLES
 INSERT INTO role (role_name) VALUES
 ('admin'),
 ('customer');
 
+-- USERS
 INSERT INTO user_account (name, email, phone, password, role_id) VALUES
 ('Ahmed Hassan', 'ahmed.hassan@example.com', '01012345678', 'pass123', 2),
 ('Mona Ali', 'mona.ali@example.com', '01198765432', 'pass456', 2),
 ('Omar Mostafa', 'omar.mostafa@example.com', '01234567890', 'pass789', 1);
 
+-- HOTELS
 INSERT INTO hotel (name, location, rating, description) VALUES
 ('Cairo Grand Hotel', 'Cairo', 4.5, 'Luxury hotel in downtown Cairo'),
 ('Alexandria Beach Resort', 'Alexandria', 4.0, 'Beachfront hotel with sea view'),
 ('Luxor Nile Hotel', 'Luxor', 4.2, 'Hotel near the Nile with excellent services');
 
+-- ROOMS
 INSERT INTO room (room_type, price, availability, hotel_id) VALUES
 ('Single', 1200.00, TRUE, 1),
 ('Double', 2000.00, TRUE, 1),
 ('Suite', 3500.00, TRUE, 2),
 ('Standard', 1500.00, TRUE, 3);
 
+-- AIRLINES
 INSERT INTO airline (airline_name) VALUES
 ('EgyptAir'),
 ('Nile Air'),
 ('Air Cairo');
 
+-- FLIGHTS
 INSERT INTO flight (departure_city, arrival_city, departure_date, arrival_date, price, available_seats, airline_id) VALUES
 ('Cairo', 'Alexandria', '2026-04-01', '2026-04-01', 1500.00, 50, 1),
 ('Cairo', 'Luxor', '2026-04-05', '2026-04-05', 2500.00, 30, 2),
 ('Alexandria', 'Cairo', '2026-04-10', '2026-04-10', 1400.00, 60, 3);
 
-INSERT INTO reservation_hotel (user_id, hotel_id, reservation_date, status) VALUES
+-- RESERVATIONS (Rooms)
+INSERT INTO reservation_room (user_id, room_id, reservation_date, status) VALUES
 (1, 1, '2026-04-01', 'Confirmed'),
-(2, 2, '2026-04-05', 'Pending');
+(2, 3, '2026-04-05', 'Pending'),
+(1, 2, '2026-04-10', 'Confirmed'),
+(2, 1, '2026-04-12', 'Pending'),
+(3, 2, '2026-04-15', 'Confirmed'),
+(1, 3, '2026-04-18', 'Cancelled'),
+(3, 4, '2026-04-20', 'Confirmed');
 
+-- BOOKINGS (Flight)
 INSERT INTO booking_flight (user_id, flight_id, booking_date, status) VALUES
 (1, 1, '2026-03-20', 'Confirmed'),
 (2, 3, '2026-03-22', 'Pending'),
@@ -132,21 +144,34 @@ INSERT INTO booking_flight (user_id, flight_id, booking_date, status) VALUES
 (3, 1, '2026-03-26', 'Confirmed'),
 (1, 1, '2026-03-27', 'Confirmed');
 
-INSERT INTO review (user_id, review_type, hotel_id, flight_id, rating, comment, review_date) VALUES
-(1, 'hotel', 1, NULL, 5, 'Excellent stay, very comfortable!', '2026-04-02'),
-(2, 'flight', NULL, 3, 4, 'Good flight, on time.', '2026-04-11');
+-- REVIEWS
+INSERT INTO review (user_id, entity_id, type, rating, comment) VALUES
+(1, 1, 'hotel', 5, 'Excellent stay, very comfortable!'),
+(2, 3, 'flight', 4, 'Good flight, on time.');
 
-INSERT INTO payment (user_id, reservation_id, booking_id, amount, payment_method, payment_date) VALUES
-(1, 1, NULL, 1200.00, 'Card', '2026-03-25'),
-(2, NULL, 2, 1400.00, 'Cash', '2026-03-26');
+-- PAYMENTS
+INSERT INTO payment (user_id, entity_id, type, amount, payment_method, payment_date) VALUES
+-- Hotel payments (entity_id = reservation_room_id)
+(1, 1, 'hotel', 1200.00, 'card', '2026-03-25'),
+(2, 2, 'hotel', 1400.00, 'cash', '2026-03-26'),
+
+-- Flight payments (entity_id = booking_flight_id)
+(1, 1, 'flight', 1500.00, 'card', '2026-03-27'),
+(3, 3, 'flight', 2500.00, 'cash', '2026-03-28');
+
+
+-- =====================================================
+-- ============= 3. QUERIES =====================
+-- =====================================================
 
 -- 1. List all hotel bookings for each user
 SELECT 
     u.name AS user_name,
     h.name AS hotel_name,
-    rh.reservation_date
+    rr.reservation_date
 FROM user_account u
-JOIN reservation_hotel rh USING (user_id)
+JOIN reservation_room rr USING (user_id)
+JOIN room r USING (room_id)
 JOIN hotel h USING (hotel_id);
 
 -- 2. Total revenue from each user
@@ -154,6 +179,7 @@ SELECT u.name AS user_name,p.payment_method, sum(p.amount) AS user_spent
 FROM user_account u
 JOIN  payment p USING (user_id)
 GROUP BY u.name, p.payment_method
+ORDER BY user_spent DESC
 
 -- 3. Hotels with average rating >= 3.5.
 SELECT h.name AS hotel_name , rating
@@ -181,10 +207,11 @@ FROM (
         COUNT(*) AS total_reservations,
         DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS rank
     FROM hotel h
-    JOIN reservation_hotel rh USING (hotel_id)
+    JOIN room r USING (hotel_id)
+    JOIN reservation_room rr USING (room_id)
     GROUP BY h.hotel_id, h.name
-) AS temp
-WHERE temp.rank <= 3;
+) t
+WHERE rank <= 3;
 
 -- 6. Upcoming flights in the next 3 weeks and listing users who booked them.
 SELECT 
@@ -199,17 +226,17 @@ WHERE f.departure_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 21;
 
 -- 7. Users who booked both a hotel and a flight for the same trip (same date range)
 SELECT 
-    u.name AS user_name,
+    u.name,
     h.name AS hotel_name,
     f.departure_city,
-    f.arrival_city,
-    f.departure_date
+    f.arrival_city
 FROM user_account u
-JOIN reservation_hotel rh USING (user_id)
+JOIN reservation_room rr USING (user_id)
+JOIN room r USING (room_id)
 JOIN hotel h USING (hotel_id)
 JOIN booking_flight bf USING (user_id)
 JOIN flight f USING (flight_id)
-WHERE rh.reservation_date = f.departure_date;
+WHERE rr.reservation_date = f.departure_date;
 
 -- 8. Top 3 busiest routes
 SELECT departure_city, arrival_city, COUNT(*) AS total_bookings
@@ -220,16 +247,16 @@ ORDER BY total_bookings DESC
 LIMIT 3;
 
 -- 9. Available rooms in a hotel today
-SELECT 
+SELECT
     r.room_id,
     r.room_type,
-    h.name AS hotel_name
+    h.name
 FROM room r
 JOIN hotel h USING (hotel_id)
-WHERE r.hotel_id NOT IN (
-    SELECT hotel_id
-    FROM reservation_hotel
-    WHERE reservation_date = CURRENT_DATE 
+WHERE r.room_id NOT IN (
+    SELECT room_id
+    FROM reservation_room
+    WHERE reservation_date = CURRENT_DATE
 );
 
 -- 10. Airline has the highest number of bookings?
